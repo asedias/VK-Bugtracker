@@ -1,0 +1,41 @@
+<?xml version="1.0" encoding="utf-8"?>
+<RelativeLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    xmlns:tools="http://schemas.android.com/tools"
+    android:layout_width="match_parent"
+    android:layout_height="wrap_content"
+    android:paddingBottom="8dp"
+    android:paddingLeft="16dp"
+    android:paddingRight="16dp"
+    android:paddingTop="8dp"
+    android:background="?selectableItemBackground"
+    android:clickable="true">
+
+    <TextView
+        android:id="@+id/title"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:text="@string/addr_product"
+        android:textSize="14sp" />
+
+    <ImageView
+        android:id="@+id/dropdown"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_alignParentRight="true"
+        android:layout_alignTop="@+id/tags_layout"
+        app:srcCompat="@drawable/ic_about" />
+
+    <com.asedias.bugtracker.others.FlowLayout
+        android:id="@+id/tags_layout"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:layout_below="@+id/title"
+        android:layout_marginTop="3dp"
+        android:layout_toLeftOf="@+id/dropdown"
+        android:minHeight="30dp"
+        android:orientation="horizontal">
+
+    </com.asedias.bugtracker.others.FlowLayout>
+
+</RelativeLayout>
