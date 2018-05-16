@@ -104,7 +104,6 @@ public class ReportListFragment extends VKRecyclerFragment {
                     getActivity().finish();
                 }
                 if(e instanceof AccessDeniedException) {
-                    BugTrackerApp.context.getSharedPreferences("user", 0).edit().clear().apply();
                     getActivity().finish();
                 }
                 if(e instanceof InternetException) {

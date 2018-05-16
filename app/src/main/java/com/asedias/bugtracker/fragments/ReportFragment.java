@@ -83,8 +83,6 @@ public class ReportFragment extends VKRecyclerFragment {
                     getActivity().finish();
                 }
                 if(e instanceof AccessDeniedException) {
-                    LoginActivity.clearCookies();
-                    BugTrackerApp.context.getSharedPreferences("user", 0).edit().clear().apply();
                     getActivity().finish();
                 }
                 if(e instanceof InternetException) {
