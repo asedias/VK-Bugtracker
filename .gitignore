@@ -39,6 +39,9 @@ captures/
 .idea/gradle.xml
 .idea/dictionaries
 .idea/libraries
+app/src/main/java/com/asedias/bugtracker/fragments/AddReportFragment.java
+app/src/main/java/com/vkontakte
+app/src/main/java/me/grishka
 
 # Keystore files
 *.jks
