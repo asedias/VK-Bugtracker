@@ -23,15 +23,14 @@ import org.w3c.dom.Text;
  */
 
 public class ThemeManager {
-    public static int currentTheme;
-    private static int currentPrimary;
-    public static int currentTextColor;
-    private static SharedPreferences preferences;
+    public static int currentTheme = R.style.AppTheme;
+    private static int currentPrimary = LightPrimary();
+    public static int currentTextColor = Color.BLACK;
+    private static SharedPreferences preferences = PreferenceManager.getDefaultSharedPreferences(BugTrackerApp.context);
     private static String KEY_THEME = "currentTheme";
 
     public ThemeManager() {
-        this.preferences = PreferenceManager.getDefaultSharedPreferences(BugTrackerApp.context);
-        currentTheme = this.preferences.getInt(KEY_THEME, R.style.AppTheme);
+        currentTheme = preferences.getInt(KEY_THEME, R.style.AppTheme);
         currentPrimary = currentTheme == R.style.AppTheme ? LightPrimary() : DarkPrimary();
         currentTextColor = currentTheme == R.style.AppTheme ? Color.BLACK : Color.WHITE;
     }
