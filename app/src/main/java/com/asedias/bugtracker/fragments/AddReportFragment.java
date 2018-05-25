@@ -15,6 +15,7 @@ import com.asedias.bugtracker.FragmentWrapperActivity;
 import com.asedias.bugtracker.R;
 import com.asedias.bugtracker.async.base.Callback;
 import com.asedias.bugtracker.async.base.GetDocument;
+import com.asedias.bugtracker.async.base.PostRequestParser;
 import com.asedias.bugtracker.ui.adapter.AddReportAdapter;
 import com.asedias.bugtracker.model.NewReportItem;
 import com.asedias.bugtracker.others.ReportSettings;
@@ -84,10 +85,10 @@ public class AddReportFragment extends CardRecyclerFragment {
             case R.id.add: {
                 HashMap<Boolean, String> result = mSettings.getReportURL(mAdapter.mItems);
                 final ProgressDialog dialog = ProgressDialog.show(getActivity(), BugTrackerApp.String(R.string.loading), BugTrackerApp.String(R.string.loading));
-                new GetDocument(result.get(true)).setCallback(new Callback<String>() {
+                new GetDocument(result.get(true)).setCallback(new Callback<PostRequestParser>() {
                     String id;
                     @Override
-                    public void onBackground(String document) {
+                    public void onBackground(PostRequestParser document) {
                         Pattern p = Pattern.compile(".+id=(\\d+)");
                         //Log.d("REPORT URI", document.baseUri());
                         //id = p.matcher(document.baseUri()).toMatchResult().group(1);

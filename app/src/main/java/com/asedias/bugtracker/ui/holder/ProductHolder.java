@@ -1,6 +1,5 @@
 package com.asedias.bugtracker.ui.holder;
 
-import android.media.Image;
 import android.os.Build;
 import android.support.annotation.NonNull;
 import android.text.Html;
@@ -10,12 +9,11 @@ import android.view.ViewGroup;
 import android.widget.Button;
 import android.widget.ImageView;
 import android.widget.TextView;
-import android.widget.Toast;
 
 import com.asedias.bugtracker.R;
-import com.asedias.bugtracker.async.DeleteLicenceRequest;
-import com.asedias.bugtracker.async.JoinProduct;
-import com.asedias.bugtracker.async.base.DocumentRequest;
+import com.asedias.bugtracker.async.methods.DeleteLicenceRequest;
+import com.asedias.bugtracker.async.methods.JoinProduct;
+import com.asedias.bugtracker.async.DocumentRequest;
 import com.asedias.bugtracker.fragments.ProductListFragment;
 import com.asedias.bugtracker.model.ProductItem;
 import com.asedias.bugtracker.ui.CropCircleTransformation;
@@ -56,72 +54,55 @@ public class ProductHolder extends RecyclerHolder<ProductItem> {
     }
 
     private View.OnClickListener cancelRequest() {
-        return new View.OnClickListener() {
+        return v -> new DeleteLicenceRequest(ProductListFragment.mActivity, data.id, data.hash).setCallback(new DocumentRequest.RequestCallback<String>() {
             @Override
-            public void onClick(View v) {
-                new DeleteLicenceRequest(ProductListFragment.mActivity, data.id, data.hash).setCallback(new DocumentRequest.RequestCallback<String>() {
-                    @Override
-                    public void onSuccess(String obj) {
-                        if(data.hash.length() == 18) {
-                            data.hash = obj;
-                            //Log.d("NEW HASH", "NEW HASH: " + obj);
-                        } else {
-                            Log.d("NEW HASH", "WRONG HASH: " + obj);
-                        }
-                    }
-
-                    @Override
-                    public void onUIThread() {
-                        if(data.hash.length() == 18) {
-                            data.cancel = false;
-                            data.join = true;
-                            cancel.post(new Runnable() {
-                                @Override
-                                public void run() {
-                                    cancel.setVisibility(View.GONE);
-                                    join.setVisibility(View.VISIBLE);
-                                    join.setOnClickListener(joinProduct());
-                                }
-                            });
-                        }
-                    }
-                }).run();
+            public void onSuccess(String obj) {
+                if(data.hash.length() == 18) {
+                    data.hash = obj;
+                } else {
+                    Log.d("HASH", "WRONG HASH: " + obj);
+                }
             }
-        };
+
+            @Override
+            public void onUIThread() {
+                if(data.hash.length() == 18) {
+                    data.cancel = false;
+                    data.join = true;
+                    cancel.post(() -> {
+                        cancel.setVisibility(View.GONE);
+                        join.setVisibility(View.VISIBLE);
+                        join.setOnClickListener(joinProduct());
+                    });
+                }
+            }
+        }).run();
     }
 
     private View.OnClickListener joinProduct() {
-        return new View.OnClickListener() {
+        return v -> new JoinProduct(ProductListFragment.mActivity, data.id, data.hash).setCallback(new DocumentRequest.RequestCallback<String>() {
             @Override
-            public void onClick(View v) {
-                new JoinProduct(ProductListFragment.mActivity, data.id, data.hash).setCallback(new DocumentRequest.RequestCallback<String>() {
-                    @Override
-                    public void onSuccess(String obj) {
-                        if(data.hash.length() == 18) {
-                            data.hash = obj;
-                            //Log.d("NEW HASH", "NEW HASH: " + obj);
-                        } else {
-                            Log.d("NEW HASH", "WRONG HASH: " + obj);
-                        }
-                    }
-
-                    @Override
-                    public void onUIThread() {
-                        if(data.hash.length() == 18) {
-                            data.join = false;
-                            data.cancel = true;
-                            join.post(new Runnable() {
-                                @Override
-                                public void run() {
-                                    join.setVisibility(View.GONE);
-                                    cancel.setVisibility(View.VISIBLE);
-                                    cancel.setOnClickListener(cancelRequest());
-                                }
-                            });
-                        }
-                    }
-                }).run();
+            public void onSuccess(String obj) {
+                if(data.hash.length() == 18) {
+                    data.hash = obj;
+                    //Log.d("NEW HASH", "NEW HASH: " + obj);
+                } else {
+                    Log.d("NEW HASH", "WRONG HASH: " + obj);
+                }
             }
-        };
+
+            @Override
+            public void onUIThread() {
+                if(data.hash.length() == 18) {
+                    data.join = false;
+                    data.cancel = true;
+                    join.post(() -> {
+                        join.setVisibility(View.GONE);
+                        cancel.setVisibility(View.VISIBLE);
+                        cancel.setOnClickListener(cancelRequest());
+                    });
+                }
+            }
+        }).run();
     }
 }

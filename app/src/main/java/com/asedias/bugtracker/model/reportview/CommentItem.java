@@ -37,17 +37,11 @@ public class CommentItem extends ReportItem {
         Elements docs = comment.getElementsByClass("page_doc_row");
         if (ph.size() > 0) {
             if (ph.size() > 0) this.photos = new PhotoList(ph.get(0));
-            Log.d("COMMENT", "WITH PHOTOS " + ph.size());
-        } else {
-            Log.d("COMMENT", "WITHOUT PHOTOS");
         }
         if (comment.getElementsByClass("page_doc_row").size() > 0) {
             for (int i = 0; i < docs.size(); i++) {
                 this.docs.add(new DocItem(new Attachment(docs.get(i))));
             }
-            Log.d("COMMENT", "WITH DOCS " + docs.size());
-        } else {
-            Log.d("COMMENT", "WITHOUT DOCS");
         }
     }
 

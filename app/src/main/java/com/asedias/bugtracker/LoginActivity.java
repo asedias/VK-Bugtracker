@@ -1,7 +1,6 @@
 package com.asedias.bugtracker;
 
 import android.app.ProgressDialog;
-import android.content.Context;
 import android.content.Intent;
 import android.content.SharedPreferences;
 import android.graphics.Bitmap;
@@ -15,16 +14,13 @@ import android.webkit.CookieSyncManager;
 import android.webkit.WebView;
 import android.webkit.WebViewClient;
 
-import com.asedias.bugtracker.async.GetUserInfo;
-import com.asedias.bugtracker.async.base.Callback;
-import com.asedias.bugtracker.async.base.DocumentRequest;
-import com.asedias.bugtracker.async.base.GetDocument;
-import com.asedias.bugtracker.model.ProfileItem;
-
-import org.jsoup.Jsoup;
-import org.jsoup.nodes.Document;
+import com.asedias.bugtracker.async.methods.GetUserInfo;
+import com.asedias.bugtracker.async.DocumentRequest;
 
 public class LoginActivity extends AppCompatActivity {
+
+    private static final long UPDATE_TIME = 1526750151;
+    private static final int client_id = 4967124;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -45,7 +41,7 @@ public class LoginActivity extends AppCompatActivity {
                 if (url.contains("blank.html")) {
                     SharedPreferences.Editor editor = getSharedPreferences("user", 0).edit();
                     editor.putString("url", url);
-                    editor.putString("time", (System.currentTimeMillis() / 1000) + "");
+                    editor.putLong("time", (System.currentTimeMillis() / 1000));
                     url = url.substring("https://oauth.vk.com/blank.html#".length());
                     String[] result = url.split("&");
                     for (int i = 0; i < result.length; i++) {
@@ -54,9 +50,6 @@ public class LoginActivity extends AppCompatActivity {
                     String cookies = CookieManager.getInstance().getCookie("https://vk.com");
                     editor.putString("cookies", cookies);
                     editor.apply();
-                    editor.commit();
-                    //startActivity(new Intent(LoginActivity.this, MainActivity.class));
-                    //finish();
                     getInfoAndStart();
                 }
             }
@@ -64,7 +57,7 @@ public class LoginActivity extends AppCompatActivity {
         });
 
         //webView.loadDataWithBaseURL(getLoginURL(false), null, "text/html", "UTF-8", null);
-        webView.loadUrl(getLoginURL(false));
+        webView.loadUrl(getLoginURL());
     }
 
     private void getInfoAndStart() {
@@ -72,28 +65,46 @@ public class LoginActivity extends AppCompatActivity {
         new GetUserInfo(UserData.getUID()).setCallback(new DocumentRequest.RequestCallback<GetUserInfo.Result>() {
             @Override
             public void onSuccess(GetUserInfo.Result obj) {
-                SharedPreferences.Editor editor = BugTrackerApp.context.getSharedPreferences("user", 0).edit();
-                editor.putString("user_photo", obj.photo);
-                editor.putString("user_name", obj.name);
-                editor.putString("user_subtitle", obj.subtitle);
-                editor.apply();
+                UserData.updateUserData(obj);
+                Intent intent = new Intent(LoginActivity.this, MainActivity.class);
+                intent.setFlags(Intent.FLAG_ACTIVITY_CLEAR_TASK|Intent.FLAG_ACTIVITY_CLEAR_TOP);
+                startActivity(intent);
+                finish();
+
             }
         }).run();
     }
 
-    private String getLoginURL(boolean revoke) {
-        String client_id = "4967124";
+    public static String getLoginURL() {
         return "https://oauth.vk.com/authorize?" +
                 "client_id=" + client_id +
-                "&scope=65536" +
+                "&scope=196608" +
                 "&display=mobile" +
                 "&v=5.47" +
                 "&response_type=token";
     }
 
-    public static boolean isLoggedOn(Context context) {
-        SharedPreferences pref = context.getSharedPreferences("user", 0);
+    public static boolean isLoggedOn() {
+        SharedPreferences pref = BugTrackerApp.context.getSharedPreferences("user", 0);
         return (pref.contains("access_token"));
+    }
+
+    public static boolean isLoggedOnAndActual() {
+        try {
+            SharedPreferences pref = BugTrackerApp.context.getSharedPreferences("user", 0);
+            long time = pref.getLong("time", 0);
+            boolean needLogin = false;
+            if (time < UPDATE_TIME) {
+                clearCookies();
+                needLogin = true;
+            }
+            return (pref.contains("access_token") && !needLogin);
+        } catch(ClassCastException e) {
+            e.printStackTrace();
+            clearPrefs();
+            clearCookies();
+            return false;
+        }
     }
 
     public static void clearCookies()

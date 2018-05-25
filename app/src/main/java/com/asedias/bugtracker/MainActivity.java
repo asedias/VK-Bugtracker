@@ -5,17 +5,25 @@ import android.content.ClipboardManager;
 import android.content.DialogInterface;
 import android.content.Intent;
 import android.content.SharedPreferences;
+import android.net.Uri;
 import android.os.Build;
 import android.os.Bundle;
 import android.support.v7.app.AlertDialog;
 import android.support.v7.app.AppCompatActivity;
 import android.util.Log;
 import android.view.View;
+import android.widget.Toast;
 
-import com.asedias.bugtracker.async.GetUserInfo;
-import com.asedias.bugtracker.async.base.DocumentRequest;
+import com.asedias.bugtracker.async.UploadDoc;
+import com.asedias.bugtracker.async.methods.GetUploadServer;
+import com.asedias.bugtracker.async.methods.GetUserInfo;
+import com.asedias.bugtracker.async.DocumentRequest;
+import com.asedias.bugtracker.async.methods.UpdateCookie;
 import com.asedias.bugtracker.ui.ButtomNavigationInstance;
 import com.vkontakte.android.ui.FitSystemWindowsFragmentWrapperFrameLayout;
+import com.vkontakte.android.upload.UploadUtils;
+
+import java.io.File;
 
 import static com.asedias.bugtracker.ui.ThemeManager.currentTheme;
 
@@ -26,20 +34,15 @@ public class MainActivity extends AppCompatActivity {
         setTheme(currentTheme);
         super.onCreate(savedInstanceState);
         BugTrackerApp.setAppDisplayMetrix(this);
-        if(!LoginActivity.isLoggedOn(this)) {
+        if(!LoginActivity.isLoggedOnAndActual()) {
             startActivity(new Intent(MainActivity.this, LoginActivity.class));
             Log.d("bugtracker auth", "User is invalid");
             finish();
             return;
         }
         new GetUserInfo(UserData.getUID()).setCallback(new DocumentRequest.RequestCallback<GetUserInfo.Result>() {
-            @Override
-            public void onSuccess(GetUserInfo.Result obj) {
-                SharedPreferences.Editor editor = BugTrackerApp.context.getSharedPreferences("user", 0).edit();
-                editor.putString("user_photo", obj.photo);
-                editor.putString("user_name", obj.name);
-                editor.putString("user_subtitle", obj.subtitle);
-                editor.apply();
+            @Override public void onSuccess(GetUserInfo.Result obj) {
+                UserData.updateUserData(obj);
             }
         }).run();
         setContentView(R.layout.activity_main);
@@ -67,6 +70,19 @@ public class MainActivity extends AppCompatActivity {
             }
         }
     }
+
+    @Override
+    protected void onActivityResult(int requestCode, int resultCode, Intent data) {
+        switch(requestCode){
+            case 1234:
+                if(resultCode==RESULT_OK){
+                    String PathHolder = data.getData().getPath();
+                    File file = new File(PathHolder);
+                    Toast.makeText(MainActivity.this, file.exists() + "\n" + file.getAbsolutePath() , Toast.LENGTH_LONG).show();
+                }
+        }
+    }
+
 
     private void showCrashLog() {
         AlertDialog.Builder var1 = new AlertDialog.Builder(this);

@@ -1,16 +1,9 @@
-package com.asedias.bugtracker.async;
+package com.asedias.bugtracker.async.methods;
 
 import android.app.Activity;
 
-import com.asedias.bugtracker.async.base.DialogDocumentRequest;
-import com.asedias.bugtracker.async.base.DocumentRequest;
-
-import org.jsoup.Jsoup;
-import org.jsoup.nodes.Document;
-import org.jsoup.safety.Whitelist;
-
-import java.util.regex.Matcher;
-import java.util.regex.Pattern;
+import com.asedias.bugtracker.async.DialogDocumentRequest;
+import com.asedias.bugtracker.async.base.PostRequestParser;
 
 /**
  * Created by rorom on 12.05.2018.
@@ -25,8 +18,8 @@ public class JoinProduct extends DialogDocumentRequest<String> {
     }
 
     @Override
-    protected String parse(String doc) {
+    protected String parse(PostRequestParser doc) {
         String regex = ".+\\(([0-9][0-9]?),'(\\w+)'\\).+";
-        return doc.replace("\n", "").replaceAll(regex, "$2");
+        return doc.html.toString().replace("\n", "").replaceAll(regex, "$2");
     }
 }

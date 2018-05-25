@@ -49,4 +49,5 @@
     <string name="change_theme">Change theme</string>
     <string name="show_more_info">Show more info</string>
     <string name="hide">Hide</string>
+    <string name="add_comment_hint">Your comment</string>
 </resources>

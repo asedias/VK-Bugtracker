@@ -88,10 +88,6 @@ public class ProfileFragment extends VKRecyclerFragment implements View.OnClickL
 
     public View onCreateContentView(LayoutInflater var1, ViewGroup var2, Bundle var3) {
         this.headerView = View.inflate(getActivity(), R.layout.profile_header, (ViewGroup)null);
-        ((TextView)this.headerView.findViewById(R.id.title)).setText(UserData.getName());
-        ((TextView)this.headerView.findViewById(R.id.title)).setTextColor(ThemeManager.currentTextColor);
-        ((TextView)this.headerView.findViewById(R.id.profile_subtitle)).setText(UserData.getSubtitle());
-        Picasso.with(getActivity()).load(UserData.getPhoto()).placeholder(R.drawable.placeholder_user).transform(new CropCircleTransformation()).into((ImageView) this.headerView.findViewById(R.id.icon));
         return super.onCreateContentView(var1, var2, var3);
     }
 
@@ -99,6 +95,10 @@ public class ProfileFragment extends VKRecyclerFragment implements View.OnClickL
     public void onViewCreated(View var1, Bundle var2) {
         super.onViewCreated(var1, var2);
         this.setTitle(R.string.title_home);
+        ((TextView)this.headerView.findViewById(R.id.title)).setText(UserData.getName());
+        ((TextView)this.headerView.findViewById(R.id.title)).setTextColor(ThemeManager.currentTextColor);
+        ((TextView)this.headerView.findViewById(R.id.profile_subtitle)).setText(UserData.getSubtitle());
+        Picasso.with(getActivity()).load(UserData.getPhoto()).placeholder(BugTrackerApp.Drawable(R.drawable.placeholder_user)).transform(new CropCircleTransformation()).into((ImageView) this.headerView.findViewById(R.id.icon));
         list.setPadding(0, 0, 0, 0);
     }
 

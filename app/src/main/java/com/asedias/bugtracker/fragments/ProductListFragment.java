@@ -10,31 +10,21 @@ import android.view.View;
 import com.asedias.bugtracker.BugTrackerApp;
 import com.asedias.bugtracker.LoginActivity;
 import com.asedias.bugtracker.R;
-import com.asedias.bugtracker.async.GetProducts;
-import com.asedias.bugtracker.async.base.Callback;
-import com.asedias.bugtracker.async.base.DocumentRequest;
-import com.asedias.bugtracker.async.base.GetDocument;
-import com.asedias.bugtracker.model.ProductItem;
+import com.asedias.bugtracker.async.methods.GetProducts;
+import com.asedias.bugtracker.async.DocumentRequest;
 import com.asedias.bugtracker.others.AccessDeniedException;
 import com.asedias.bugtracker.others.AuthorizationNeededException;
 import com.asedias.bugtracker.others.InternetException;
 import com.asedias.bugtracker.ui.adapter.ProductsAdapter;
 import com.vkontakte.android.fragments.CardRecyclerFragment;
-import com.vkontakte.android.ui.CardItemDecorator;
 import com.vkontakte.android.ui.holder.RecyclerSectionAdapter;
-
-import org.jsoup.nodes.Document;
-import org.jsoup.nodes.Element;
-import org.jsoup.select.Elements;
 
 import java.util.List;
 
 import me.grishka.appkit.api.ErrorResponse;
 import me.grishka.appkit.utils.V;
 import me.grishka.appkit.views.DividerItemDecoration;
-import me.grishka.appkit.views.UsableRecyclerView;
 
-import static com.asedias.bugtracker.ui.adapter.ProductsAdapter.TYPE_PRODUCT;
 import static com.asedias.bugtracker.ui.adapter.ProductsAdapter.TYPE_SEARCH;
 
 /**

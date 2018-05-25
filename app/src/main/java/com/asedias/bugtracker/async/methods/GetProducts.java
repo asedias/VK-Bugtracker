@@ -1,8 +1,9 @@
-package com.asedias.bugtracker.async;
+package com.asedias.bugtracker.async.methods;
 
 import android.util.Log;
 
-import com.asedias.bugtracker.async.base.DocumentRequest;
+import com.asedias.bugtracker.async.DocumentRequest;
+import com.asedias.bugtracker.async.base.PostRequestParser;
 import com.asedias.bugtracker.model.ProductItem;
 import com.vkontakte.android.ui.holder.RecyclerSectionAdapter;
 
@@ -13,8 +14,6 @@ import org.jsoup.select.Elements;
 
 import java.util.ArrayList;
 import java.util.List;
-import java.util.regex.Matcher;
-import java.util.regex.Pattern;
 
 import static com.asedias.bugtracker.ui.adapter.ProductsAdapter.TYPE_PRODUCT;
 
@@ -24,14 +23,15 @@ import static com.asedias.bugtracker.ui.adapter.ProductsAdapter.TYPE_PRODUCT;
 
 public class GetProducts extends DocumentRequest<List<RecyclerSectionAdapter.Data>> {
     public GetProducts(boolean all) {
-        super(false);
+        super(true);
         this.param("act", "products");
         if(all) this.param("section", "all");
     }
 
     @Override
-    protected List<RecyclerSectionAdapter.Data> parse(String text) {
-        Document doc = Jsoup.parse(text);
+    protected List<RecyclerSectionAdapter.Data> parse(PostRequestParser text) {
+        Log.d("URL", this.mTask.request.url().toString());
+        Document doc = text.html;
         List<RecyclerSectionAdapter.Data> list = new ArrayList<>();
         Elements products = doc.getElementsByClass("bt_product_row");
         for(int i = 0; i < products.size(); i++) {

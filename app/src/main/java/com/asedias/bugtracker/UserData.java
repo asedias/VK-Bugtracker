@@ -2,6 +2,8 @@ package com.asedias.bugtracker;
 
 import android.content.SharedPreferences;
 
+import com.asedias.bugtracker.async.methods.GetUserInfo;
+
 /**
  * Created by rorom on 17.04.2018.
  */
@@ -21,6 +23,17 @@ public class UserData {
         name = preferences.getString("user_name", "");
         photo = preferences.getString("user_photo", "https://vk.com/images/camera_200.png");
         subtitle = preferences.getString("user_subtitle", "");
+    }
+
+    public static void updateUserData(GetUserInfo.Result user) {
+        name = user.name;
+        photo = user.photo;
+        subtitle = user.subtitle;
+        SharedPreferences.Editor editor = BugTrackerApp.context.getSharedPreferences("user", 0).edit();
+        editor.putString("user_photo", user.photo);
+        editor.putString("user_name", user.name);
+        editor.putString("user_subtitle", user.subtitle);
+        editor.apply();
     }
 
     public static String getAccessToken() {

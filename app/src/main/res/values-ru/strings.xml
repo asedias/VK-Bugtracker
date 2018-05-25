@@ -49,5 +49,6 @@
     <string name="change_theme">Сменить тему</string>
     <string name="show_more_info">Показать полностью</string>
     <string name="hide">Скрыть</string>
-    <string name="action_settings" translatable="false">Настройки</string>
+    <string name="action_settings">Настройки</string>
+    <string name="add_comment_hint">Ваш комментарий</string>
 </resources>

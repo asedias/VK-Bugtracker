@@ -1,11 +1,9 @@
-package com.asedias.bugtracker.async;
+package com.asedias.bugtracker.async.methods;
 
 import android.app.Activity;
 
-import com.asedias.bugtracker.async.base.DialogDocumentRequest;
-import com.asedias.bugtracker.async.base.DocumentRequest;
-
-import org.jsoup.nodes.Document;
+import com.asedias.bugtracker.async.DialogDocumentRequest;
+import com.asedias.bugtracker.async.base.PostRequestParser;
 
 import java.util.regex.Matcher;
 import java.util.regex.Pattern;
@@ -23,9 +21,9 @@ public class DeleteLicenceRequest extends DialogDocumentRequest<String> {
     }
 
     @Override
-    protected String parse(String doc) {
+    protected String parse(PostRequestParser doc) {
         Pattern p = Pattern.compile("<.+\\(this, [0-9][0-9]?, [0-9][0-9]?, '(\\w+)'\\).+>");
-        Matcher m = p.matcher(doc);
+        Matcher m = p.matcher(doc.html.toString());
         while (m.find()) {
             if(!m.group(1).contains("<")) return m.group(1);
         }

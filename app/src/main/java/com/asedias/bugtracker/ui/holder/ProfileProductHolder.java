@@ -123,7 +123,7 @@ public class ProfileProductHolder extends RecyclerHolder {
             if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.N) {
                 this.meta.setText(Html.fromHtml(item.meta, Html.FROM_HTML_MODE_COMPACT));
             } else {
-                this.name.setText(Html.fromHtml(item.meta));
+                this.meta.setText(Html.fromHtml(item.meta));
             }
         } else {
             this.meta.setVisibility(View.GONE);

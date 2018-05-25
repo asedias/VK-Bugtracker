@@ -1,7 +1,9 @@
 package com.asedias.bugtracker.ui.holder;
 
 import android.app.Activity;
+import android.os.Build;
 import android.os.Bundle;
+import android.text.Html;
 import android.util.DisplayMetrics;
 import android.view.LayoutInflater;
 import android.view.View;
@@ -12,8 +14,8 @@ import android.widget.TextView;
 import com.asedias.bugtracker.BugTrackerApp;
 import com.asedias.bugtracker.FragmentWrapperActivity;
 import com.asedias.bugtracker.R;
-import com.asedias.bugtracker.async.AddBookmark;
-import com.asedias.bugtracker.async.base.DocumentRequest;
+import com.asedias.bugtracker.async.methods.AddBookmark;
+import com.asedias.bugtracker.async.DocumentRequest;
 import com.asedias.bugtracker.fragments.ReportFragment;
 import com.asedias.bugtracker.model.Report;
 import com.asedias.bugtracker.others.FlowLayout;
@@ -71,7 +73,11 @@ public class ReportHolder extends RecyclerHolder<Report> {
     }
 
     public void bind(final Report report) {
-        this.mTitle.setText(report.title);
+        if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.N) {
+            this.mTitle.setText(Html.fromHtml(report.title, Html.FROM_HTML_MODE_LEGACY));
+        } else {
+            this.mTitle.setText(Html.fromHtml(report.title));
+        }
         this.mTitle.setTextColor(currentTextColor);
         this.mTime.setText(report.time);
         this.mState.setText(report.state);
@@ -95,12 +101,7 @@ public class ReportHolder extends RecyclerHolder<Report> {
                 ImageView imageView = new ImageView(itemView.getContext());
                 imageView.setImageResource(R.drawable.ic_dots_expand);
                 imageView.setBackgroundResource(R.drawable.background_tag);
-                imageView.setOnClickListener(new View.OnClickListener() {
-                    @Override
-                    public void onClick(View v) {
-                        expandTags((ImageView)v, report.tags);
-                    }
-                });
+                imageView.setOnClickListener(v -> expandTags((ImageView)v, report.tags));
                 FlowLayout.LayoutParams lp = new FlowLayout.LayoutParams();
                 lp.height = (int) BugTrackerApp.dp(28);
                 lp.width = (int) more_width;
@@ -110,27 +111,19 @@ public class ReportHolder extends RecyclerHolder<Report> {
 
         }
 
-        this.mBookmark.setOnClickListener(new View.OnClickListener() {
+        this.mBookmark.setOnClickListener(v -> new AddBookmark((Activity)itemView.getContext(), report.id, report.hash, report.bookmarked).setCallback(new DocumentRequest.RequestCallback() {
             @Override
-            public void onClick(View v) {
-                new AddBookmark((Activity)itemView.getContext(), report.id, report.hash, report.bookmarked).setCallback(new DocumentRequest.RequestCallback() {
-                    @Override
-                    public void onUIThread() {
-                        report.bookmarked = !report.bookmarked;
-                        mBookmark.setImageResource(report.bookmarked ? R.drawable.ic_report_bookmark_checked : R.drawable.ic_report_bookmark);
-                    }
-                }).run();
+            public void onUIThread() {
+                report.bookmarked = !report.bookmarked;
+                mBookmark.setImageResource(report.bookmarked ? R.drawable.ic_report_bookmark_checked : R.drawable.ic_report_bookmark);
             }
-        });
+        }).run());
 
-        itemView.setOnClickListener(new View.OnClickListener() {
-            @Override
-            public void onClick(View view) {
-                Bundle args = new Bundle();
-                args.putString("id", report.id);
-                FragmentWrapperActivity.startWithFragment((Activity)itemView.getContext(), new ReportFragment(), args);
-                //((MainActivity)itemView.getContext()).mNavigator.go(new ReportFragment(), args);
-            }
+        itemView.setOnClickListener(view -> {
+            Bundle args = new Bundle();
+            args.putString("id", report.id);
+            FragmentWrapperActivity.startWithFragment((Activity)itemView.getContext(), new ReportFragment(), args);
+            //((MainActivity)itemView.getContext()).mNavigator.go(new ReportFragment(), args);
         });
     }
 

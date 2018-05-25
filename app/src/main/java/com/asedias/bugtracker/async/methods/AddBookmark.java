@@ -1,8 +1,8 @@
-package com.asedias.bugtracker.async;
+package com.asedias.bugtracker.async.methods;
 
 import android.app.Activity;
 
-import com.asedias.bugtracker.async.base.DialogDocumentRequest;
+import com.asedias.bugtracker.async.DialogDocumentRequest;
 
 /**
  * Created by rorom on 15.05.2018.

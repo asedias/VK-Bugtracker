@@ -8,7 +8,7 @@ import android.widget.FrameLayout;
 
 import com.asedias.bugtracker.BugTrackerApp;
 import com.asedias.bugtracker.R;
-import com.asedias.bugtracker.async.GetReport;
+import com.asedias.bugtracker.async.methods.GetReport;
 import com.asedias.bugtracker.model.TitleItem;
 import com.asedias.bugtracker.ui.holder.AttachmentHolder;
 import com.asedias.bugtracker.ui.holder.ExpandHolder;
@@ -68,7 +68,6 @@ public class ReportAdapter extends RecyclerSectionAdapter<RecyclerHolder> implem
                 data.add(RecyclerSectionAdapter.Data.middle(TYPE_COMMENT, result.comments.get(i)));
             }
         }
-        data.add(RecyclerSectionAdapter.Data.bottom(TYPE_BOTTOM, R.drawable.card_margin_fix_item));
     }
 
     public void showhideInfo() {

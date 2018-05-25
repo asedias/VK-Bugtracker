@@ -30,6 +30,10 @@ android {
             minifyEnabled true
             proguardFiles getDefaultProguardFile('proguard-android.txt'), 'proguard-rules.pro'
         }
+        debug {
+            minifyEnabled false
+            debuggable true
+        }
     }
     buildToolsVersion '26.0.2'
     compileOptions {
@@ -54,6 +58,7 @@ dependencies {
     implementation 'com.android.support:support-v4:27.1.1'
     implementation 'com.android.support:recyclerview-v7:27.1.1'
     compile 'com.squareup.okhttp3:okhttp:3.10.0'
+    compile "com.squareup.okhttp3:okhttp-urlconnection:3.10.0"
     compile 'org.jsoup:jsoup:1.11.1'
     compile 'com.squareup.picasso:picasso:2.5.2'
 }

@@ -1,9 +1,7 @@
-package com.asedias.bugtracker.async;
+package com.asedias.bugtracker.async.methods;
 
-import android.util.Log;
-
-import com.asedias.bugtracker.async.base.DocumentRequest;
-import com.asedias.bugtracker.async.base.GetDocument;
+import com.asedias.bugtracker.async.DocumentRequest;
+import com.asedias.bugtracker.async.base.PostRequestParser;
 import com.asedias.bugtracker.model.Report;
 import com.vkontakte.android.ui.holder.RecyclerSectionAdapter;
 
@@ -37,12 +35,10 @@ public class GetReportList extends DocumentRequest<GetReportList.Result> {
     }
 
     @Override
-    protected Result parse(String doc) {
-        //Log.d("REPORT LIST", "BEGIN PARSE");
+    protected Result parse(PostRequestParser doc) {
         Result result = new Result();
-        String udate = doc.substring(doc.length()-30);
-        result.udate = Integer.parseInt(udate.replaceAll("[^0-9]*([0-9]*)[^0-9]*", "$1"));
-        Document document = Jsoup.parse(doc.split("<!>")[5]);
+        result.udate = Integer.parseInt(doc.external_info.replace("<!int>", ""));
+        Document document = doc.html;
         Elements reports = document.getElementsByClass("bt_report_row");
         if(reports.size() > 0) {
             Elements reports_found = document.getElementsByClass("bt_reports_found");
@@ -60,11 +56,8 @@ public class GetReportList extends DocumentRequest<GetReportList.Result> {
                     result.reports.add(RecyclerSectionAdapter.Data.top(1, new Report(reports.get(i))));
                 }
             }
-            //Log.d("udate", udate + "\n" + udate.replaceAll("[^0-9]*([0-9]*)[^0-9]*", "$1"));
         }
         result.more = result.udate > 0 && reports.size() > 0;
-        //Log.d("REPORT LIST", "END PARSE " + document.html());
-        //Log.d("REPORT LIST", "END PARSE " + reports.size() + " " + result.udate);
         return result;
     }
 

@@ -81,21 +81,15 @@ public class VersionHolder extends RecyclerHolder<RecyclerSectionAdapter.Data> {
                 this.title.setText(item.title);
                 final AlertDialog.Builder builder = new AlertDialog.Builder(AddReportAdapter.context);
                 builder.setTitle(R.string.addr_product);
-                this.itemView.setOnClickListener(new View.OnClickListener() {
-                    @Override
-                    public void onClick(View v) {
-                        builder.setItems(item.items, new DialogInterface.OnClickListener() {
-                            @Override
-                            public void onClick(DialogInterface dialog, int which) {
-                                ReportSettings.Product temp = AddReportFragment.mSettings.productsArray[which];
-                                title.setText(temp.name);
-                                item.title = temp.name;
-                                AddReportFragment.mSettings.currentID = temp.id;
-                                AddReportFragment.UpdateInfo();
-                            }
-                        });
-                        builder.show();
-                    }
+                this.itemView.setOnClickListener(v -> {
+                    builder.setItems(item.items, (dialog, which) -> {
+                        ReportSettings.Product temp = AddReportFragment.mSettings.productsArray[which];
+                        title.setText(temp.name);
+                        item.title = temp.name;
+                        AddReportFragment.mSettings.currentID = temp.id;
+                        AddReportFragment.UpdateInfo();
+                    });
+                    builder.show();
                 });
                 break;
             }
@@ -107,27 +101,21 @@ public class VersionHolder extends RecyclerHolder<RecyclerSectionAdapter.Data> {
                 itemView.getLayoutParams().height = ViewGroup.LayoutParams.WRAP_CONTENT;
                 final AlertDialog.Builder builder = new AlertDialog.Builder(AddReportAdapter.context);
                 if(item.items != null && item.items.length > 0 && item.items.length != 1) {
-                    this.itemView.setOnClickListener(new View.OnClickListener() {
-                        @Override
-                        public void onClick(View v) {
-                            builder.setMultiChoiceItems(item.items, item.selected, new DialogInterface.OnMultiChoiceClickListener() {
-                                @Override
-                                public void onClick(DialogInterface dialog, int which, boolean isChecked) {
-                                    if (isChecked) {
-                                        TextView tag = (TextView) ((Activity) AddReportAdapter.context).getLayoutInflater().inflate(R.layout.tag_item, null);
-                                        tag.setText(item.items[which]);
-                                        tags.addView(tag);
-                                        tagsView.put(which, tag);
-                                    } else {
-                                        tags.removeView(tagsView.get(which));
-                                    }
-                                    if(isPlatform) setPlatformList(which, isChecked);
-                                    //UpdatePlatforms();
-                                }
-                            });
-                            if(item.items.length > 0) builder.show();
-                            //BottomSheetBehavior.from(builder.show().getListView()).setState(BottomSheetBehavior.STATE_EXPANDED);
-                        }
+                    this.itemView.setOnClickListener(v -> {
+                        builder.setMultiChoiceItems(item.items, item.selected, (dialog, which, isChecked) -> {
+                            if (isChecked) {
+                                TextView tag = (TextView) ((Activity) AddReportAdapter.context).getLayoutInflater().inflate(R.layout.tag_item, null);
+                                tag.setText(item.items[which]);
+                                tags.addView(tag);
+                                tagsView.put(which, tag);
+                            } else {
+                                tags.removeView(tagsView.get(which));
+                            }
+                            if(isPlatform) setPlatformList(which, isChecked);
+                            //UpdatePlatforms();
+                        });
+                        if(item.items.length > 0) builder.show();
+                        //BottomSheetBehavior.from(builder.show().getListView()).setState(BottomSheetBehavior.STATE_EXPANDED);
                     });
                 } else if(item.items != null){
                     TextView tag = (TextView) ((Activity) AddReportAdapter.context).getLayoutInflater().inflate(R.layout.tag_item, null);
@@ -169,21 +157,18 @@ public class VersionHolder extends RecyclerHolder<RecyclerSectionAdapter.Data> {
                     }
                 });
                 if(item.img_state == View.VISIBLE) {
-                    this.action.setOnClickListener(new View.OnClickListener() {
-                        @Override
-                        public void onClick(View v) {
-                            Intent chooser = new Intent(Intent.ACTION_GET_CONTENT);
-                            Uri uri = Uri.parse(Environment.getExternalStorageDirectory().getPath().toString());
-                            chooser.addCategory(Intent.CATEGORY_OPENABLE);
-                            chooser.setDataAndType(uri, "*/*");
-                            try {
-                                //FragmentWrapperActivity.mFragment.startActivityForResult(chooser, 12333);
-                            }
-                            catch (android.content.ActivityNotFoundException ex)
-                            {
-                                Toast.makeText(AddReportAdapter.context, "Please install a File Manager.",
-                                        Toast.LENGTH_SHORT).show();
-                            }
+                    this.action.setOnClickListener(v -> {
+                        Intent chooser = new Intent(Intent.ACTION_GET_CONTENT);
+                        Uri uri = Uri.parse(Environment.getExternalStorageDirectory().getPath().toString());
+                        chooser.addCategory(Intent.CATEGORY_OPENABLE);
+                        chooser.setDataAndType(uri, "*/*");
+                        try {
+                            //FragmentWrapperActivity.mFragment.startActivityForResult(chooser, 12333);
+                        }
+                        catch (android.content.ActivityNotFoundException ex)
+                        {
+                            Toast.makeText(AddReportAdapter.context, "Please install a File Manager.",
+                                    Toast.LENGTH_SHORT).show();
                         }
                     });
                 }
@@ -198,31 +183,20 @@ public class VersionHolder extends RecyclerHolder<RecyclerSectionAdapter.Data> {
             }
             case TYPE_SWITCH: {
                 this.aSwitch.setText(item.title);
-                this.aSwitch.setOnCheckedChangeListener(new CompoundButton.OnCheckedChangeListener() {
-                    @Override
-                    public void onCheckedChanged(CompoundButton buttonView, boolean isChecked) {
-                        item.switch_data = isChecked;
-                    }
-                });
+                this.aSwitch.setOnCheckedChangeListener((buttonView, isChecked) -> item.switch_data = isChecked);
                 break;
             }
             case TYPE_SEVERITY: {
                 this.title.setText(item.title);
                 final AlertDialog.Builder builder = new AlertDialog.Builder(AddReportAdapter.context);
                 builder.setTitle(R.string.addr_severity);
-                this.itemView.setOnClickListener(new View.OnClickListener() {
-                    @Override
-                    public void onClick(View v) {
-                        builder.setItems(item.items, new DialogInterface.OnClickListener() {
-                            @Override
-                            public void onClick(DialogInterface dialog, int which) {
-                                ReportSettings.ArrayItem temp = AddReportFragment.mSettings.severity.get(which);
-                                subtitle.setText(temp.name);
-                                AddReportFragment.mSettings.currentSeverity = temp.id;
-                            }
-                        });
-                        builder.show();
-                    }
+                this.itemView.setOnClickListener(v -> {
+                    builder.setItems(item.items, (dialog, which) -> {
+                        ReportSettings.ArrayItem temp = AddReportFragment.mSettings.severity.get(which);
+                        subtitle.setText(temp.name);
+                        AddReportFragment.mSettings.currentSeverity = temp.id;
+                    });
+                    builder.show();
                 });
             }
         }

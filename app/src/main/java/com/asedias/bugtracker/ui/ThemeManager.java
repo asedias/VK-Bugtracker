@@ -89,7 +89,6 @@ public class ThemeManager {
         anim.setDuration(400).start();
         anim.addListener(new Animator.AnimatorListener() {
             @Override public void onAnimationStart(Animator animation) { }
-
             @Override public void onAnimationEnd(Animator animation) {
                 if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.LOLLIPOP) {
                     int visibility = View.SYSTEM_UI_FLAG_LAYOUT_FULLSCREEN + View.SYSTEM_UI_FLAG_LAYOUT_STABLE;
@@ -101,13 +100,13 @@ public class ThemeManager {
                     }
                     activity.getWindow().getDecorView().setSystemUiVisibility(visibility);
                 }
+                updateTheme();
             }
 
             @Override public void onAnimationCancel(Animator animation) { }
             @Override public void onAnimationRepeat(Animator animation) { }
         });
         getAllViews((ViewGroup) activity.getWindow().getDecorView());
-        updateTheme();
     }
 
 }
